@@ -3,6 +3,7 @@ var https = require('https');
 var fs = require('fs');
 var httpProxy = require('http-proxy');
 //var httpPrxy = httpProxy.createProxyServer();
+var agent = require('hub-agent');
 var httpsPrxy = httpProxy.createProxyServer();
 
 var hosts = {
@@ -60,7 +61,7 @@ var httpsServer = https.createServer({
     httpsPrxy.web(req, res, {
         target: target
     });
-}).listen(443);
+});
 
 httpsServer.on('upgrade', function (req, socket, head) {
     var target = req.headers ? hosts[req.headers['host']] : null;
@@ -74,6 +75,8 @@ httpsServer.on('upgrade', function (req, socket, head) {
         target: target
     });
 });
+
+agent(httpsServer, 443);
 
 process.on('uncaughtException', function (err) {
     console.log('unhandled exception ' + err);

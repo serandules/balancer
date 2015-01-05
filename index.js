@@ -1,3 +1,4 @@
+var debug = require('debug')('serandules-balancer');
 var http = require('http');
 var https = require('https');
 var fs = require('fs');
@@ -20,7 +21,7 @@ var hosts = {
 /*var httpServer = http.createServer(function (req, res) {
  var target = req.headers ? hosts[req.headers['host']] : null;
  if (!target) {
- console.log('backend server not found for host : ' + req.headers['host']);
+ debug('backend server not found for host : ' + req.headers['host']);
  res.writeHead(404, 'Not Found');
  res.end();
  return;
@@ -33,7 +34,7 @@ var hosts = {
  httpServer.on('upgrade', function (req, socket, head) {
  var target = req.headers ? hosts[req.headers['host']] : null;
  if (!target) {
- console.log('backend server not found for host : ' + req.headers['host']);
+ debug('backend server not found for host : ' + req.headers['host']);
  res.writeHead(404, 'Not Found');
  res.end();
  return;
@@ -52,12 +53,12 @@ var httpsServer = https.createServer({
 }, function (req, res) {
     var target = req.headers ? hosts[req.headers['host']] : null;
     if (!target) {
-        console.log('backend server not found for host : ' + req.headers['host']);
+        debug('backend server not found for host : ' + req.headers['host']);
         res.writeHead(404, 'Not Found');
         res.end();
         return;
     }
-    console.log(target);
+    debug(target);
     httpsPrxy.web(req, res, {
         target: target
     });
@@ -66,7 +67,7 @@ var httpsServer = https.createServer({
 httpsServer.on('upgrade', function (req, socket, head) {
     var target = req.headers ? hosts[req.headers['host']] : null;
     if (!target) {
-        console.log('backend server not found for host : ' + req.headers['host']);
+        debug('backend server not found for host : ' + req.headers['host']);
         res.writeHead(404, 'Not Found');
         res.end();
         return;
@@ -79,8 +80,8 @@ httpsServer.on('upgrade', function (req, socket, head) {
 agent(httpsServer, 443);
 
 process.on('uncaughtException', function (err) {
-    console.log('unhandled exception ' + err);
-    console.log(err.stack);
+    debug('unhandled exception ' + err);
+    debug(err.stack);
 });
 
-console.log('balancer started successfully');
+debug('balancer started successfully');

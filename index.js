@@ -1,4 +1,4 @@
-var debug = require('debug')('serandules-balancer');
+var debug = require('debug')('serandules:balancer');
 var http = require('http');
 var https = require('https');
 var fs = require('fs');

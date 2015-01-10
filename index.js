@@ -19,6 +19,15 @@ agent(function () {
         }
     };
 
+    httpsPrxy.on('error', function (err, req, res) {
+        res.writeHead(500, {
+            'Content-Type': 'application/json'
+        });
+        res.end(JSON.stringify({
+            error: 'proxy error'
+        }));
+    });
+
     var httpsServer = https.createServer({
         key: fs.readFileSync('/etc/ssl/serand/hub.key'),
         cert: fs.readFileSync('/etc/ssl/serand/hub.crt'),

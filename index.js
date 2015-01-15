@@ -6,7 +6,9 @@ agent(function () {
     var https = require('https');
     var fs = require('fs');
     var httpProxy = require('http-proxy');
-    var httpsPrxy = httpProxy.createProxyServer();
+    var httpsPrxy = httpProxy.createProxyServer({
+        agent: http.globalAgent
+    });
 
     var hosts = {
         'accounts.serandives.com': {

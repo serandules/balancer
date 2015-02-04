@@ -7,7 +7,7 @@ agent(function () {
     var fs = require('fs');
     var httpProxy = require('http-proxy');
     var httpsPrxy = httpProxy.createProxyServer({
-        agent: http.globalAgent
+        procevent: http.globalAgent
     });
 
     var hosts = {

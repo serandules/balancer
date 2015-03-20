@@ -1,4 +1,4 @@
-var debug = require('debug')('serandules:balancer');
+var log = require('logger')('balancer:index');
 var clustor = require('clustor');
 
 var self = '*.serandives.com';
@@ -8,6 +8,8 @@ clustor(function () {
     var https = require('https');
     var fs = require('fs');
     var httpProxy = require('http-proxy');
+    var procevent = require('procevent')(process);
+
     var httpsPrxy = httpProxy.createProxyServer({
         agent: http.globalAgent
     });
@@ -41,12 +43,12 @@ clustor(function () {
     }, function (req, res) {
         var target = req.headers ? hosts[req.headers['host']] : null;
         if (!target) {
-            debug('backend server not found for host : ' + req.headers['host']);
+            log.debug('backend server not found for host:%s', req.headers['host']);
             res.writeHead(404, 'Not Found');
             res.end();
             return;
         }
-        debug(target);
+        log.debug(target);
         httpsPrxy.web(req, res, {
             target: target
         });
@@ -55,7 +57,7 @@ clustor(function () {
     httpsServer.on('upgrade', function (req, socket, head) {
         var target = req.headers ? hosts[req.headers['host']] : null;
         if (!target) {
-            debug('backend server not found for host : ' + req.headers['host']);
+            log.debug('backend server not found for host:%s', req.headers['host']);
             return socket.end({
                 error: 404
             });
@@ -67,13 +69,15 @@ clustor(function () {
 
     httpsServer.listen(443);
 
+    procevent.emit('started');
+
 }, function (err, address) {
     log.info('drone started | domain:%s, address:%s, port:%s', self, address.address, address.port);
 });
 
 process.on('uncaughtException', function (err) {
-    debug('unhandled exception ' + err);
-    debug(err.stack);
+    log.debug('unhandled exception %s', err);
+    log.debug(err.stack);
 });
 
-debug('balancer started successfully');
+log.debug('balancer started successfully');

@@ -1,13 +1,15 @@
 var debug = require('debug')('serandules:balancer');
-var agent = require('hub-agent');
+var clustor = require('clustor');
 
-agent(function () {
+var self = '*.serandives.com';
+
+clustor(function () {
     var http = require('http');
     var https = require('https');
     var fs = require('fs');
     var httpProxy = require('http-proxy');
     var httpsPrxy = httpProxy.createProxyServer({
-        procevent: http.globalAgent
+        agent: http.globalAgent
     });
 
     var hosts = {
@@ -54,9 +56,9 @@ agent(function () {
         var target = req.headers ? hosts[req.headers['host']] : null;
         if (!target) {
             debug('backend server not found for host : ' + req.headers['host']);
-            res.writeHead(404, 'Not Found');
-            res.end();
-            return;
+            return socket.end({
+                error: 404
+            });
         }
         httpsPrxy.ws(req, socket, head, {
             target: target
@@ -64,6 +66,9 @@ agent(function () {
     });
 
     httpsServer.listen(443);
+
+}, function (err, address) {
+    log.info('drone started | domain:%s, address:%s, port:%s', self, address.address, address.port);
 });
 
 process.on('uncaughtException', function (err) {

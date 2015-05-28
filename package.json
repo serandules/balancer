@@ -7,10 +7,10 @@
         "email": "serandives@gmail.com"
     },
     "dependencies": {
+        "http-proxy": "1.*",
         "logger": "serandules/logger#master",
-        "debug":"*",
-        "http-proxy": "0.10.3",
-        "hub-agent": "serandules/hub-agent#master"
+        "clustor": "serandules/clustor#master",
+        "procevent": "serandules/procevent#master"
     },
     "repository": {
         "type": "git",
